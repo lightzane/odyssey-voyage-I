@@ -4,12 +4,18 @@ const { startStandaloneServer } = require('@apollo/server/standalone');
 const { readFileSync } = require('fs');
 const gql = require('graphql-tag');
 
+/* prettier-ignore */
 const typeDefs = gql(readFileSync('./locations.graphql', { encoding: 'utf-8' }));
 const resolvers = require('./resolvers');
 const LocationsAPI = require('./datasources/LocationsApi');
+const { buildSubgraphSchema } = require('@apollo/subgraph');
 
 async function startApolloServer() {
-  const server = new ApolloServer({ typeDefs, resolvers });
+  // const server = new ApolloServer({ typeDefs, resolvers });
+
+  const server = new ApolloServer({
+    schema: buildSubgraphSchema({ typeDefs, resolvers }),
+  });
 
   const port = 4001;
   const subgraphName = 'locations';
